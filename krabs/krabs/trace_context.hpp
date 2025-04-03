@@ -16,7 +16,10 @@ namespace krabs {
     struct trace_context
     {
         const schema_locator schema_locator;
+        void *user_context;
         /* Add additional trace context here. */
+
+        trace_context(void* ctx = nullptr) : user_context(ctx) {}
     };
 
 }

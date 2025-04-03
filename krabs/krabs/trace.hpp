@@ -79,8 +79,9 @@ namespace krabs {
 
         /**
          * <summary>
-         *   Constructs a trace with an optional trace name, which can be
-         *   any arbitrary, unique name.
+         *   Constructs a trace with an optional trace name (which can be
+         *   any arbitrary, unique name), and an optional pointer to a user-defined object
+         *   which can be accessed from any event callback via trace_context.user_context.
          * </summary>
          *
          * <example>
@@ -88,8 +89,8 @@ namespace krabs {
          *   trace namedTrace(L"Some special name");
          * </example>
          */
-        trace(const std::wstring &name);
-        trace(const wchar_t *name = L"");
+        trace(const std::wstring &name, void *user_context = nullptr);
+        trace(const wchar_t *name = L"", void *user_context = nullptr);
 
         /**
          * <summary>
@@ -386,24 +387,24 @@ namespace krabs {
     }
 
     template <typename T>
-    trace<T>::trace(const std::wstring &name)
+    trace<T>::trace(const std::wstring &name, void *user_context)
     : registrationHandle_(INVALID_PROCESSTRACE_HANDLE)
     , sessionHandle_(INVALID_PROCESSTRACE_HANDLE)
     , eventsHandled_(0)
     , buffersRead_(0)
-    , context_()
+    , context_(user_context)
     {
         name_ = T::enforce_name_policy(name);
         ZeroMemory(&properties_, sizeof(EVENT_TRACE_PROPERTIES));
     }
 
     template <typename T>
-    trace<T>::trace(const wchar_t *name)
+    trace<T>::trace(const wchar_t *name, void *user_context)
     : registrationHandle_(INVALID_PROCESSTRACE_HANDLE)
     , sessionHandle_(INVALID_PROCESSTRACE_HANDLE)
     , eventsHandled_(0)
     , buffersRead_(0)
-    , context_()
+    , context_(user_context)
     {
         name_ = T::enforce_name_policy(name);
         ZeroMemory(&properties_, sizeof(EVENT_TRACE_PROPERTIES));
